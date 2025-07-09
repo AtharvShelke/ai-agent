@@ -1,5 +1,5 @@
 services:
-  app:
+  static_html:
     build: 
       context: ./static_html
       dockerfile: static.Dockerfile
@@ -10,3 +10,30 @@ services:
     command: python -m http.server 8000
     volumes:
       - "./static_html/src:/app"
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - PORT=8000
+      - MYPROJECT=Hello_World
+    env_file:
+      - .env.sample
+    # volumes:
+    #   - "./backend/src:/app"
+    develop:
+      watch:
+        - action: rebuild
+          path: backend/requirements.txt
+        - action: rebuild
+          path: backend/Dockerfile
+        - action: sync
+          path: backend/src/
+          target: /app
+        - action: restart
+          path: backend/src/
+        
+      
