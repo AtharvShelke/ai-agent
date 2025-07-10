@@ -1,39 +1,46 @@
 services:
-  static_html:
-    build: 
-      context: ./static_html
-      dockerfile: static.Dockerfile
+  # static_html:
+  #   build: 
+  #     context: ./static_html
+  #     dockerfile: static.Dockerfile
       
-    ports:
-      - "8000:8000"
+  #   ports:
+  #     - "8000:8000"
       
-    command: python -m http.server 8000
-    volumes:
-      - "./static_html/src:/app"
+  #   command: python -m http.server 8000
+  #   volumes:
+  #     - "./static_html/src:/app"
   backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8080:8000"
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     environment:
       - PORT=8000
       - MYPROJECT=Hello_World
     env_file:
       - .env.sample
-    # volumes:
-    #   - "./backend/src:/app"
+    volumes:
+      - "./backend/src:/app"
+    depends_on:
+      - db_service
     develop:
       watch:
         - action: rebuild
           path: backend/requirements.txt
         - action: rebuild
           path: backend/Dockerfile
-        - action: sync
-          path: backend/src/
-          target: /app
         - action: restart
           path: backend/src/
-        
-      
+  db_service:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - dc_managed_db_volume:/var/lib/postgresql/data
+volumes:
+  dc_managed_db_volume:      

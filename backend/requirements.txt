@@ -1,2 +1,10 @@
 fastapi==0.116.0
 uvicorn[standard]
+requests
+psycopg[binary]
+sqlmodel
+python-dotenv
+psycopg2-binary
+pydantic
+sqlalchemy
+sqlalchemy-utils
