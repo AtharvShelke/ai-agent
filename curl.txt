@@ -1,0 +1,29 @@
+
+
+CORRECT
+curl.exe http://localhost:12434/engines/llama.cpp/v1/chat/completions \    -H "Content-Type: application/json" \    -d '{        "model": "ai/smollm2",        "messages": [            {                "role": "system",               
+ "content": "You are a helpful assistant."            },            {                "role": "user",                "content": "Please write 500 words about the fall of Rome."            }        ]    }'\
+
+wroked earlier, doesn't work now
+
+FOR RUNNING BACKEND : docker compose run backend /bin/bash and then copy paste this
+curl http://model-runner.docker.internal/engines/llama.cpp/v1/chat/completions \
+-H "Content-Type: application/json" \
+-d '{
+  "model": "ai/smollm2:360M-Q4_K_M",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant."
+    },
+    {
+      "role": "user",
+      "content": "Please write 10 words about the fall of Rome."
+    }
+  ]
+}'
+
+
+
+this worked
+curl.exe -X POST http://localhost:12434/engines/llama.cpp/v1/chat/completions `  -H "Content-Type: application/json" `  --data-binary "@request.json"   

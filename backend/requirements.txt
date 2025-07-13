@@ -8,3 +8,9 @@ psycopg2-binary
 pydantic
 sqlalchemy
 sqlalchemy-utils
+langchain
+langchain-openai
+langchain-community
+langchain_google_genai
+dotenv
+

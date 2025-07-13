@@ -3,6 +3,8 @@ from sqlmodel import Session, select
 from .models import ChatMessage_1Payload, ChatMessage_1, ChatMessage_1Response
 from api.db import get_session
 from typing import List
+from api.ai.services import generate_email_message
+from api.ai.schemas import EmailMessageSchema
 router = APIRouter()
 
 @router.get("/")
@@ -20,8 +22,10 @@ def chat_list_messages(session: Session = Depends(get_session)):
 
 
 # curl.exe -X POST -d '{\"message\": \"Hello, world!\"}' -H "Content-Type: application/json" http://localhost:8080/chat/
+
+# curl.exe -X POST -d '{\"message\": \"Give me a summary why it is important to go outside\"}' -H "Content-Type: application/json" http://localhost:8080/chat/
 # This endpoint creates a new chat message
-@router.post("/", response_model=ChatMessage_1)
+@router.post("/", response_model=EmailMessageSchema)
 def chat_create_message(
     payload:ChatMessage_1Payload,
     session: Session = Depends(get_session)  # Replace with actual session dependency
@@ -32,6 +36,6 @@ def chat_create_message(
     obj = ChatMessage_1.model_validate(data)
     session.add(obj)
     session.commit()
-    session.refresh(obj)
-
-    return obj
+    # session.refresh(obj)
+    response = generate_email_message(payload.message)
+    return response
